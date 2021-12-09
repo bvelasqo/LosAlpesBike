@@ -1,0 +1,23 @@
+{
+  "name": "Los Alpes Bikes",
+  "version": "1.0.0",
+  "description": "Backend lAB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bvelasqo/LosAlpesBike.git"
+  },
+  "author": "Brandon Velásquez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bvelasqo/LosAlpesBike/issues"
+  },
+  "homepage": "https://github.com/bvelasqo/LosAlpesBike#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.7.1"
+  }
+}
