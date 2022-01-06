@@ -9,7 +9,14 @@ const _authController = require("../controllers/admin/admin.controller");
 // RUTAS PUBLICAS
 // Rutas no necesitan un token
 router.post("/login", _authController.getUserLogin);
-router.get("/products/:type/:genre/:others", _productsController.getProduct)
+router.get("/bicycles", _productsController.getAllPublicBicycles);
+router.get("/clothes", _productsController.getAllClothesGeneral);
+router.get("/clothes/men", _productsController.getAllClothesMen);
+router.get("/clothes/women", _productsController.getAllPublicClothesWomen);
+router.get("/parts", _productsController.getAllPublicParts);
+router.get("/accesories", _productsController.getAllPublicAccessories);
+router.get("/others", _productsController.getAllPublicOthers);
+router.get("/product/:cod", _productsController.getPublicProduct);
 router.use("/public/static", express.static("docs"));
 
 //REGISTRO DEL MIDDLEWARE
@@ -20,18 +27,25 @@ router
     // Descrifrar y verificar token
     .get("/verify", _authController.verifyToken)
     //CRUD de productos
-    .get("/products/:ref", _productsController.getProduct)
-    .get("/products", _productsController.getProducts)
-    .post("/products", _productsController.createProduct)
-    .put("/products/:id", _productsController.updateProduct)
-    .delete("/products/:id", _productsController.deleteProduct)
+    .get("/admin/products/:cod", _productsController.getProduct)
+    .get("/admin/products", _productsController.getProducts)
+    .get("/admin/bicycles", _productsController.getAllBicycles)
+    .get("/admin/clothes/men", _productsController.getAllClothesMen)
+    .get("/admin/clothes/women", _productsController.getAllClothesWomen)
+    .get("/admin/clothes", _productsController.getAllClothesGeneral)
+    .get("/admin/accessories", _productsController.getAllAccessories)
+    .get("/admin/others", _productsController.getAllOthers)
+    .get("/admin/parts", _productsController.getAllParts)
+    .post("/admin/products", _productsController.createProduct)
+    .put("/admin/products/:id", _productsController.updateProduct)
+    .delete("/admin/products/:id", _productsController.deleteProduct)
     //CRUD Ventas
-    .get("/sells", _sellersController.getSells)
-    .post("/sells", _sellersController.createSell)
-    .put("/sells", _sellersController.updateSell)
-    .delete("/sells", _sellersController.deleteSell)
+    .get("/admin/sells", _sellersController.getSells)
+    .post("/admin/sells", _sellersController.createSell)
+    .put("/admin/sells", _sellersController.updateSell)
+    .delete("/admin/sells", _sellersController.deleteSell)
     // AGREGAR ARCHIVOS A UN PRODUCTO
-    .post("/products/:id/archivos", _productsController.saveFiles);
+    .post("/admin/products/:id/archivos", _productsController.saveFiles);
 
     module.exports = router;
 

@@ -9,27 +9,178 @@ const { createFolder, saveFile, readDirectory } = require("../../services/fs.ser
  * @param {Response} res
  * @returns
  */
-const getPublicProducts = async (req, res) => {
+const getAllPublicBicycles = async (req, res) => {
     try {
-        let type = req.params.type;
-        let genre = req.params.genre;
-        let others = req.params.others;
-        let sql = "select * from Products where tipo = '"+ type +"' and genre = '"+ genre + "'  and others = '"+others+"' and estado='NORMAL'" ;
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 1 and estado = "Disponible"';
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
             ok: true,
-            message: "All products",
+            message: "All Bicycles",
             content: rows,
         });
     } catch (error) {
         return res.send({
             ok: false,
-            message: "An error has occurred querying the products",
+            message: "An error has occurred querying the Bicycles",
             content: error,
         });
     }
 };
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+ const getAllPublicClothesGeneral = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 2 and estado = "Disponible" and categoria = 4';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All Clothes",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the clothes",
+            content: error,
+        });
+    }
+};
+
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+const getAllPublicClothesMen = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 2 and estado = "Disponible"';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All Men's Clothes",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the Men's Clothes",
+            content: error,
+        });
+    }
+};
+
+
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+ const getAllPublicClothesWomen = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 4 and estado = "Disponible"';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All Women's clothes",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the Women's clothes",
+            content: error,
+        });
+    }
+};
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+ const getAllPublicParts = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 6 and estado = "Disponible"';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All Women's clothes",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the Women's clothes",
+            content: error,
+        });
+    }
+};
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+ const getAllPublicAccessories = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 5 and estado = "Disponible"';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All accessories",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the accessories",
+            content: error,
+        });
+    }
+};
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+ const getAllPublicOthers = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 3 and estado = "Disponible"';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All Women's clothes",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the Women's clothes",
+            content: error,
+        });
+    }
+};
+
 
 /**
  * Método para consultar un producto
@@ -37,15 +188,15 @@ const getPublicProducts = async (req, res) => {
  * @param {Response} res
  * @returns
  */
-const getProduct = async (req, res) => {
+const getPublicProduct = async (req, res) => {
     try {
-        let ref = req.params.ref;
-        let sql = "select * from products WHERE referencia='" + ref + "' and estado='NORMAL'";
+        let cod = req.params.cod;
+        let sql = `select * from public."Productos" WHERE codigo='${cod}' and estado = 'Disponible'`;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         rows = rows.map((product) => {
-            let path = `./docs/products/${product.id}`;
-            product.images = readDirectory(path);
+            let path = `./docs/products/${product.codigo}`;
+            product.foto = readDirectory(path);
             return product;
         });
         return res.send({
@@ -71,17 +222,15 @@ const getProduct = async (req, res) => {
 const createProduct = async (req, res) => {
     try {
         let product = req.body;
-        let sql = `INSERT INTO public.products ("name", precio, referencia, stock, tipo, descripcion, genero, otros, estado) 
-      VALUES($1, $2, $3, $4, $5, $6, $7, $8, 'NORMAL')`;
+        let sql = `INSERT INTO public."Productos" (nombre, precio, caracteristicas, stock, estado, categoria, foto)
+      VALUES($1, $2, $3, $4, 'Disponible', $5, $6)`;
         let data = [];
         data[0] = product.name;
         data[1] = product.price;
-        data[2] = product.ref;
+        data[2] = product.features;
         data[3] = product.stock;
-        data[4] = product.type;
-        data[5] = product.description;
-        data[6] = product.genre;
-        data[7] = product.others;
+        data[4] = product.category;
+        data[5] = product.picture;
 
         let result = await _pg.executeSqlData(sql, data);
         let status = result.rowCount == 1 ? 201 : 400;
@@ -109,19 +258,16 @@ const updateProduct = async (req, res) => {
     try {
         let id = req.params.id;
         let product = req.body;
-        let sql = `UPDATE public.products SET "name"=$1, precio=$2, referencia=$3, 
-      stock=$4, tipo=$5, descripcion=$6, genero=$7, otros=$8, estado=$9 WHERE id=$10`;
+        let sql = `UPDATE public."Productos" SET nombre=$1, precio=$2, caracteristicas=$3, 
+      stock=$4, estado=$5, foto = $6 WHERE id=$7`;
         let data = [];
         data[0] = product.name;
         data[1] = product.price;
-        data[2] = product.ref;
+        data[2] = product.features;
         data[3] = product.stock;
-        data[4] = product.type;
-        data[5] = product.description;
-        data[6] = product.genre;
-        data[7] = product.others;
-        data[8] = product.state;
-        data[9] = id;
+        data[4] = product.state;
+        data[5] = product.picture;
+        data[6] = id;
 
         let result = await _pg.executeSqlData(sql, data);
         return res.send({
@@ -148,7 +294,7 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         let id = req.params.id;
-        let sql = `UPDATE public.products SET estado='ELIMINADO' WHERE id=$1;  `;
+        let sql = `UPDATE public."Productos" SET estado = 'Eliminado' WHERE id=$1;`;
         let result = await _pg.executeSqlData(sql, [id]);
         return res.send({
             ok: result.rowCount == 1,
@@ -191,14 +337,14 @@ const saveFiles = async (req, res) => {
 const getProducts = async (req, res) => {
     try {
         let sql =
-            "select * from products";
+            'select * from public."Productos";';
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
 
         // Recorrer los productos para agregarle las imagenes
         rows = rows.map((product) => {
-            let path = `./docs/products/${product.id}`;
-            product.images = readDirectory(path);
+            let path = `./docs/products/${product.cod}`;
+            product.foto = readDirectory(path);
             return product;
         });
         return res.send({
@@ -214,12 +360,239 @@ const getProducts = async (req, res) => {
         });
     }
 };
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+ const getAllBicycles = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 1 ';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All Bicycles",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the Bicycles",
+            content: error,
+        });
+    }
+};
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+ const getAllClothesGeneral = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 2  and categoria = 4';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All Clothes",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the clothes",
+            content: error,
+        });
+    }
+};
+
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+const getAllClothesMen = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 2 ';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All Men's Clothes",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the Men's Clothes",
+            content: error,
+        });
+    }
+};
+
+
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+ const getAllClothesWomen = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 4 ';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All Women's clothes",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the Women's clothes",
+            content: error,
+        });
+    }
+};
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+ const getAllParts = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 6 ';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All Women's clothes",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the Women's clothes",
+            content: error,
+        });
+    }
+};
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+ const getAllAccessories = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 5 ';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All accessories",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the accessories",
+            content: error,
+        });
+    }
+};
+
+/**
+ * Método de consultar todos los productos
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+ const getAllOthers = async (req, res) => {
+    try {
+        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 3 ';
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        return res.send({
+            ok: true,
+            message: "All Women's clothes",
+            content: rows,
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the Women's clothes",
+            content: error,
+        });
+    }
+};
+
+
+/**
+ * Método para consultar un producto
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+const getProduct = async (req, res) => {
+    try {
+        let cod = req.params.cod;
+        let sql = `select * from public."Productos" WHERE codigo='${cod}' `;
+        let result = await _pg.executeSql(sql);
+        let rows = result.rows;
+        rows = rows.map((product) => {
+            let path = `./docs/products/${product.codigo}`;
+            product.foto = readDirectory(path);
+            return product;
+        });
+        return res.send({
+            ok: true,
+            message: "product searched ",
+            content: rows[0],
+        });
+    } catch (error) {
+        return res.send({
+            ok: false,
+            message: "An error has occurred querying the bikes",
+            content: error,
+        });
+    }
+};
+
+
+
 module.exports = {
+    getProduct,
     getProducts,
     createProduct,
     updateProduct,
     deleteProduct,
-    getProduct,
     saveFiles,
-    getPublicProducts,
+    getAllOthers,
+    getAllAccessories,
+    getAllParts,
+    getAllClothesMen,
+    getAllPublicOthers,
+    getPublicProduct,
+    getAllBicycles,
+    getAllClothesGeneral,
+    getAllClothesWomen,
+    getAllPublicBicycles,
+    getAllPublicClothesGeneral,
+    getAllPublicClothesMen,
+    getAllPublicClothesWomen,
+    getAllPublicParts,
+    getAllPublicAccessories,
 };
