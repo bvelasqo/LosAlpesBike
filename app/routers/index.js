@@ -8,7 +8,6 @@ const _authController = require("../controllers/admin/admin.controller");
 
 // RUTAS PUBLICAS
 // Rutas no necesitan un token
-router.post("/login", _authController.getUserLogin);
 router.get("/bicycles", _productsController.getAllPublicBicycles);
 router.get("/clothes", _productsController.getAllClothesGeneral);
 router.get("/clothes/men", _productsController.getAllClothesMen);
@@ -18,6 +17,7 @@ router.get("/accesories", _productsController.getAllPublicAccessories);
 router.get("/others", _productsController.getAllPublicOthers);
 router.get("/product/:cod", _productsController.getPublicProduct);
 router.use("/public/static", express.static("docs"));
+router.post("/login", _authController.getUserLogin);
 
 //REGISTRO DEL MIDDLEWARE
 router.use([_authController.verifyTokenMiddleware]);
@@ -45,7 +45,7 @@ router
     .put("/admin/sells", _sellersController.updateSell)
     .delete("/admin/sells", _sellersController.deleteSell)
     // AGREGAR ARCHIVOS A UN PRODUCTO
-    .post("/admin/products/:id/archivos", _productsController.saveFiles);
+    .post("/admin/products/:id/:category/archivos", _productsController.saveFiles);
 
     module.exports = router;
 
