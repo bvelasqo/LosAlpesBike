@@ -16,36 +16,34 @@ router.get("/parts", _productsController.getAllPublicParts);
 router.get("/accesories", _productsController.getAllPublicAccessories);
 router.get("/others", _productsController.getAllPublicOthers);
 router.get("/product/:cod", _productsController.getPublicProduct);
-router.use("/public/static", express.static("docs"));
 router.post("/login", _authController.getUserLogin);
+router.use("/public/static", express.static("docs"));
 
 //REGISTRO DEL MIDDLEWARE
-router.use([_authController.verifyTokenMiddleware]);
-
 // RUTAS PRIVADAS
-router
+const rutasProtegidas = express.Router(); 
+
+router.use([_authController.verifyTokenMiddleware])
     // Descrifrar y verificar token
     .get("/verify", _authController.verifyToken)
     //CRUD de productos
-    .get("/admin/products/:cod", _productsController.getProduct)
-    .get("/admin/products", _productsController.getProducts)
-    .get("/admin/bicycles", _productsController.getAllBicycles)
-    .get("/admin/clothes/men", _productsController.getAllClothesMen)
-    .get("/admin/clothes/women", _productsController.getAllClothesWomen)
-    .get("/admin/clothes", _productsController.getAllClothesGeneral)
-    .get("/admin/accessories", _productsController.getAllAccessories)
-    .get("/admin/others", _productsController.getAllOthers)
-    .get("/admin/parts", _productsController.getAllParts)
-    .post("/admin/products", _productsController.createProduct)
-    .put("/admin/products/:id", _productsController.updateProduct)
-    .delete("/admin/products/:id", _productsController.deleteProduct)
+    .get("/admin/products/:cod",rutasProtegidas, _productsController.getProduct)
+    .get("/admin/products",rutasProtegidas, _productsController.getProducts)
+    .get("/admin/bicycles",rutasProtegidas, _productsController.getAllBicycles)
+    .get("/admin/clothes/men",rutasProtegidas, _productsController.getAllClothesMen)
+    .get("/admin/clothes/women",rutasProtegidas, _productsController.getAllClothesWomen)
+    .get("/admin/clothes",rutasProtegidas, _productsController.getAllClothesGeneral)
+    .get("/admin/accessories",rutasProtegidas, _productsController.getAllAccessories)
+    .get("/admin/others",rutasProtegidas, _productsController.getAllOthers)
+    .get("/admin/parts",rutasProtegidas, _productsController.getAllParts)
+    .post("/admin/products",rutasProtegidas, _productsController.createProduct)
+    .put("/admin/products/:id",rutasProtegidas, _productsController.updateProduct)
+    .delete("/admin/products/:id",rutasProtegidas, _productsController.deleteProduct)
     //CRUD Ventas
-    .get("/admin/sells", _sellersController.getSells)
-    .post("/admin/sells", _sellersController.createSell)
-    .put("/admin/sells", _sellersController.updateSell)
-    .delete("/admin/sells", _sellersController.deleteSell)
+    .get("/admin/sells",rutasProtegidas, _sellersController.getSells)
+    .post("/admin/sells",rutasProtegidas, _sellersController.createSell)
+    .put("/admin/sells",rutasProtegidas, _sellersController.updateSell)
+    .delete("/admin/sells",rutasProtegidas, _sellersController.deleteSell)
     // AGREGAR ARCHIVOS A UN PRODUCTO
-    .post("/admin/products/:id/:category/archivos", _productsController.saveFiles);
-
+    .post("/admin/products/:id/:category/archivos",rutasProtegidas, _productsController.saveFiles);
     module.exports = router;
-

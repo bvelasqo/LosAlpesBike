@@ -11,7 +11,7 @@ const { createFolder, saveFile, readDirectory } = require("../../services/fs.ser
  */
 const getAllPublicBicycles = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 1 and estado = 'Disponible'`;
+        let sql = `select * from public."Productos" where categoria = 1 and estado = 'Disponible'`;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -36,7 +36,7 @@ const getAllPublicBicycles = async (req, res) => {
  */
  const getAllPublicClothesGeneral = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 2 and estado = 'Disponible' and categoria = 4`;
+        let sql = `select * from public."Productos" where categoria = 2 and estado = 'Disponible' and categoria = 4`;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -62,7 +62,7 @@ const getAllPublicBicycles = async (req, res) => {
  */
 const getAllPublicClothesMen = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 2 and estado = 'Disponible'`;
+        let sql = `select * from public."Productos" where categoria = 2 and estado = 'Disponible'`;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -89,7 +89,7 @@ const getAllPublicClothesMen = async (req, res) => {
  */
  const getAllPublicClothesWomen = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 4 and estado = 'Disponible'`;
+        let sql = `select * from public."Productos" where categoria = 4 and estado = 'Disponible'`;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -114,7 +114,7 @@ const getAllPublicClothesMen = async (req, res) => {
  */
  const getAllPublicParts = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 6 and estado = 'Disponible'`;
+        let sql = `select * from public."Productos" where categoria = 6 and estado = 'Disponible'`;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -139,7 +139,7 @@ const getAllPublicClothesMen = async (req, res) => {
  */
  const getAllPublicAccessories = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 5 and estado = 'Disponible'';`
+        let sql = `select * from public."Productos" where categoria = 5 and estado = 'Disponible'';`
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -164,7 +164,7 @@ const getAllPublicClothesMen = async (req, res) => {
  */
  const getAllPublicOthers = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 3 and estado = 'Disponible'`;
+        let sql = `select * from public."Productos" where categoria = 3 and estado = 'Disponible'`;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -225,13 +225,12 @@ const createProduct = async (req, res) => {
         let sql = `INSERT INTO public."Productos" (nombre, precio, caracteristicas, stock, estado, categoria, foto)
       VALUES($1, $2, $3, $4, 'Disponible', $5, $6)`;
         let data = [];
-        data[0] = product.nombre;
-        data[1] = product.precio;
-        data[2] = product.catacteristicas;
+        data[0] = product.product;
+        data[1] = product.price;
+        data[2] = product.description;
         data[3] = product.stock;
-        data[4] = product.categoria;
-        data[5] = product.foto;
-
+        data[4] = product.category;
+        data[5] = product.photo;
         let result = await _pg.executeSqlData(sql, data);
         let status = result.rowCount == 1 ? 201 : 400;
         return res.status(status).send({
@@ -259,7 +258,7 @@ const updateProduct = async (req, res) => {
         let id = req.params.id;
         let product = req.body;
         let sql = `UPDATE public."Productos" SET nombre=$1, precio=$2, caracteristicas=$3, 
-      stock=$4, estado=$5, foto = $6 WHERE id=$7`;
+      stock=$4, estado=$5, foto = $6 WHERE codigo=$7`;
         let data = [];
         data[0] = product.nombre;
         data[1] = product.precio;
@@ -294,7 +293,8 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         let id = req.params.id;
-        let sql = `UPDATE public."Productos" SET estado = 'Eliminado' WHERE id=$1;`;
+        let sql = `UPDATE public."Productos" SET estado = 'Eliminado' WHERE codigo=$1;`;
+        console.log(sql,id);
         let result = await _pg.executeSqlData(sql, [id]);
         return res.send({
             ok: result.rowCount == 1,
@@ -370,7 +370,7 @@ const getProducts = async (req, res) => {
  */
  const getAllBicycles = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 1 `;
+        let sql = `select * from public."Productos" where categoria = 1 `;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -395,7 +395,7 @@ const getProducts = async (req, res) => {
  */
  const getAllClothesGeneral = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 2  and categoria = 4`;
+        let sql = `select * from public."Productos" where categoria = 2  and categoria = 4`;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -421,7 +421,7 @@ const getProducts = async (req, res) => {
  */
 const getAllClothesMen = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 2 `;
+        let sql = `select * from public."Productos" where categoria = 2 `;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -448,7 +448,7 @@ const getAllClothesMen = async (req, res) => {
  */
  const getAllClothesWomen = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 4 `;
+        let sql = `select * from public."Productos" where categoria = 4 `;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -473,7 +473,7 @@ const getAllClothesMen = async (req, res) => {
  */
  const getAllParts = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 6;`;
+        let sql = `select * from public."Productos" where categoria = 6;`;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -498,7 +498,7 @@ const getAllClothesMen = async (req, res) => {
  */
  const getAllAccessories = async (req, res) => {
     try {
-        let sql = `select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 5;`;
+        let sql = `select * from public."Productos" where categoria = 5;`;
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
@@ -523,7 +523,7 @@ const getAllClothesMen = async (req, res) => {
  */
  const getAllOthers = async (req, res) => {
     try {
-        let sql = 'select codigo, nombre, precio, caracteristicas from public."Productos" where categoria = 3 ;';
+        let sql = 'select * from public."Productos" where categoria = 3 ;';
         let result = await _pg.executeSql(sql);
         let rows = result.rows;
         return res.send({
