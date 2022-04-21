@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(cors());
 app.use(fileUpload());
 
-app.use("/", router);
+app.use("/api", router);
 
 const PORT = 3001;
 app.listen(PORT, () => {
